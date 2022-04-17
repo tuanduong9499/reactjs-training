@@ -10,7 +10,8 @@ function App() {
     const storageJobs = JSON.parse(localStorage.getItem("jobs"));
     return storageJobs ?? [];
   });
-  const handleSubmit = (e) => {
+
+  const handleSubmit = () => {
     setJobs((prev) => {
       const newJob = [...prev, job];
       const jsonJobs = JSON.stringify(newJob);
@@ -18,9 +19,8 @@ function App() {
       return newJob;
     });
     setJob("");
-
-    e.preventDefault();
   };
+
   const handleDeleteJob = (index) => {
     if (jobs.length) {
       const newJobs = jobs.filter((job, indexJob) => indexJob !== index);
@@ -60,12 +60,15 @@ function App() {
             <li>
               <p>{job}</p>
             </li>
-            <Button
-              className="btn-delete-item"
-              onClick={() => handleDeleteJob(index)}
-            >
-              Delete
-            </Button>
+
+            <div className="btn-handle">
+              <Button
+                className="btn-delete-item"
+                onClick={() => handleDeleteJob(index)}
+              >
+                Delete
+              </Button>
+            </div>
           </ul>
         ))}
         <Button className="btn-clearAll" onClick={clearAll}>
