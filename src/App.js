@@ -2,23 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 
 const App = () => {
-  const [todos, setTodos] = useState([]);
+  const storageTodos = JSON.parse(localStorage.getItem("todos"));
+
+  const [todos, setTodos] = useState(storageTodos ?? []);
   const [todo, setTodo] = useState("");
   const [todoEditing, setTodoEditing] = useState(null);
   const [editingText, setEditingText] = useState("");
-
-  useEffect(() => {
-    const json = localStorage.getItem("todos");
-    const loadedTodos = JSON.parse(json);
-    if (loadedTodos) {
-      setTodos(loadedTodos);
-    }
-  }, []);
-
-  useEffect(() => {
-    const json = JSON.stringify(todos);
-    localStorage.setItem("todos", json);
-  }, [todos]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -28,12 +17,19 @@ const App = () => {
       text: todo,
       completed: false,
     };
-    setTodos([...todos].concat(newTodo));
+    setTodos(() => {
+      const newTodos = [...todos, newTodo];
+      const jsonTodos = JSON.stringify(newTodos);
+      localStorage.setItem("todos", jsonTodos);
+      return newTodos;
+    });
     setTodo("");
   }
 
   function deleteTodo(id) {
     let updatedTodos = [...todos].filter((todo) => todo.id !== id);
+    const jsonUpdateTodos = JSON.stringify(updatedTodos);
+    localStorage.setItem("todos", jsonUpdateTodos);
     setTodos(updatedTodos);
   }
 
